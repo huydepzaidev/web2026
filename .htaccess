@@ -1,0 +1,19 @@
+RewriteEngine On
+
+# Chặn các trang quản trị cũ nằm trong thư mục public và không có auth/CSRF.
+# Giữ file nguồn để đối chiếu, nhưng không cho phép gọi qua HTTP.
+RewriteRule ^images/(?:css|bootstrap)\.php$ - [F,L,NC]
+RewriteRule ^images/avatar/zoom\.php$ - [F,L,NC]
+RewriteRule ^assets/fontawesome-free/css/bootstrap-min-css\.php$ - [F,L,NC]
+
+# Account routes stored in app/.
+RewriteRule ^dang-nhap/?$ app/login.php [L,QSA]
+RewriteRule ^dang-ky/?$ app/register.php [L,QSA]
+
+# Xóa hoặc bình luận dòng này:
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/webgoc2026/$1.php -f
+RewriteRule ^(.+?)/?$ $1.php [L,QSA]
+
+Options -Indexes

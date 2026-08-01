@@ -1,0 +1,258 @@
+﻿html {
+    overflow-y: scroll;
+}
+
+.body_body {
+    margin-top: 0;
+}
+
+#box_forums {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: transparent;
+        }
+
+        /* Forum Post Item */
+        .forum-post-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background-color: FF9900; /* Ná»n tá»‘i hÆ¡n */
+            border: 1px solid #444; /* Viá»n nháº¹ */
+            border-radius: 6px; /* Bo trĂ²n gĂ³c nháº¹ */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* ThĂªm Ä‘á»• bĂ³ng nháº¹ */
+        }
+
+        /* Pinned Posts */
+        #stick .forum-post-item {
+            background: linear-gradient(to right, #f38500, #ffae42); /* MĂ u cam gradient cho bĂ i ghim */
+            border-color: #e07000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Avatar */
+        .post-avatar-wrapper {
+            width: 32px; /* KĂ­ch thÆ°á»›c avatar */
+            height: 32px; /* KĂ­ch thÆ°á»›c avatar */
+            flex-shrink: 0; /* NgÄƒn avatar bá»‹ co láº¡i */
+            margin-right: 10px; /* Khoáº£ng cĂ¡ch giá»¯a avatar vĂ  ná»™i dung */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%; /* Bo trĂ²n avatar */
+            overflow: hidden; /* Äáº£m báº£o áº£nh khĂ´ng trĂ n ra ngoĂ i hĂ¬nh trĂ²n */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Viá»n avatar */
+        }
+
+        .post-avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Äáº£m báº£o áº£nh bao phá»§ toĂ n bá»™ khĂ´ng gian */
+        }
+
+        /* Post Content (Title and Info) */
+        .post-content {
+            display: flex;
+            flex-direction: column; /* Xáº¿p tiĂªu Ä‘á» vĂ  thĂ´ng tin theo cá»™t */
+            flex-grow: 1; /* Cho phĂ©p chiáº¿m háº¿t khĂ´ng gian cĂ²n láº¡i */
+            min-width: 0; /* Quan trá»ng Ä‘á»ƒ `text-overflow` hoáº¡t Ä‘á»™ng Ä‘Ăºng */
+        }
+
+        .post-title-link {
+            color: #DC143C;
+            font-size: 14px; /* KĂ­ch thÆ°á»›c font tiĂªu Ä‘á» */
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap; /* NgÄƒn tiĂªu Ä‘á» xuá»‘ng dĂ²ng */
+            overflow: hidden; /* áº¨n pháº§n bá»‹ trĂ n */
+            text-overflow: ellipsis; /* Hiá»ƒn thá»‹ dáº¥u ba cháº¥m */
+            display: block; /* Cáº§n thiáº¿t cho overflow */
+            max-width: 100%; /* Äáº£m báº£o khĂ´ng trĂ n ra ngoĂ i div cha */
+        }
+
+        .hot-icon {
+            vertical-align: middle;
+            margin-left: 5px;
+            height: 10px; /* KĂ­ch thÆ°á»›c icon hot */
+            width: auto;
+        }
+
+        .post-meta-info {
+            font-size: 10px; /* KĂ­ch thÆ°á»›c font thĂ´ng tin */
+            color: #b0b0b0; /* MĂ u chá»¯ cho thĂ´ng tin */
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .post-meta-info a {
+            color: #e0e0e0; /* MĂ u chá»¯ tĂªn ngÆ°á»i Ä‘Äƒng */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .post-meta-info i {
+            color: #c0c0c0; /* MĂ u chá»¯ thá»i gian */
+            margin-left: 5px;
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: flex-end; /* CÄƒn pháº£i */
+            align-items: center;
+            margin-top: 15px; /* Khoáº£ng cĂ¡ch vá»›i danh sĂ¡ch bĂ i viáº¿t */
+            padding: 0;
+            border: none;
+            background-color: transparent;
+        }
+
+        .pagination-container div:first-child { /* áº¨n pháº§n tá»­ khĂ´ng cáº§n thiáº¿t */
+            display: none;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+        }
+
+        .pagination-item {
+            padding: 6px 12px;
+            border: 1px solid #b65d2f;
+            background: #b65d2f;
+            color: #fff;
+            margin-right: 5px;
+            border-radius: 4px;
+            font-size: 13px; /* KĂ­ch thÆ°á»›c font phĂ¢n trang */
+            text-decoration: none;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .pagination-item.active,
+        .pagination-item:hover {
+            background-color: #ffae42;
+            border-color: #ffae42;
+        }
+
+        /* Post Button Section */
+        .post-button-section {
+            text-align: center;
+            margin: 25px auto 0 auto; /* CÄƒn giá»¯a vĂ  thĂªm margin top/bottom */
+            max-width: 80px; /* Giá»›i háº¡n chiá»u rá»™ng, lĂ m cho nĂ³ nhá» gá»n hÆ¡n */
+            background-color: #FF0000; /* Ná»n giá»‘ng cĂ¡c bĂ i viáº¿t */
+            border: 1px solid #FF0000; /* Viá»n */
+            border-radius: 6px; /* Bo trĂ²n gĂ³c */
+            padding: 10px 10px; /* Padding bĂªn trong */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Äá»• bĂ³ng */
+        }
+
+        .post-button-section hr {
+            border: none;
+            border-top: 1px solid rgb(212, 255, 0);
+            width: 0%; /* Giáº£m chiá»u rá»™ng cá»§a Ä‘Æ°á»ng káº» ngang */
+            margin: 2px;
+        }
+
+        .post-button-section a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .post-button-section span {
+            display: block;
+            font-weight: bold;
+            font-size: 13px; /* Giáº£m kĂ­ch thÆ°á»›c font chá»¯ "ÄÄƒng BĂ i" */
+            color: white; /* MĂ u chá»¯ xanh lĂ¡ ná»•i báº­t */
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5); /* Hiá»‡u á»©ng Ä‘á»• bĂ³ng chá»¯ */
+        }
+
+        #user-info {
+    padding: 10px;
+    background-color: #f38500;
+    border: 1px solid #444;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    max-width: 250px;
+    margin: 10px auto 0px auto; /* Khoáº£ng cĂ¡ch trĂªn 10px, dÆ°á»›i 15px, cÄƒn giá»¯a ngang */
+    box-sizing: border-box;
+    display: block; /* Äáº£m báº£o block */
+}
+
+
+        .user-avatar {
+            width: 50px; /* KĂ­ch thÆ°á»›c avatar trong khung user info */
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-details span {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .user-details a {
+            color: white; /* MĂ u link trong user details */
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+#box_login_ads #columns {
+    display: flex; /* Sá»­ dá»¥ng flexbox Ä‘á»ƒ cĂ¡c item Ä‘á»©ng cáº¡nh nhau */
+    flex-wrap: wrap; /* Cho phĂ©p cĂ¡c item xuá»‘ng dĂ²ng náº¿u khĂ´ng Ä‘á»§ chá»— */
+    justify-content: center; /* CÄƒn giá»¯a cĂ¡c item */
+    gap: 15px; /* Táº¡o khoáº£ng cĂ¡ch giá»¯a cĂ¡c figure */
+    padding: 10px; /* ThĂªm padding cho khung chĂ­nh */
+    margin: 0 auto; /* CÄƒn giá»¯a khung chĂ­nh */
+    max-width: 900px; /* Giá»›i háº¡n chiá»u rá»™ng tá»‘i Ä‘a cá»§a khung */
+}
+#box_login_ads #columns figure {
+    /* Giáº£m kĂ­ch thÆ°á»›c khung cá»§a má»—i figure náº¿u cáº§n */
+    flex: 0 0 auto; /* KhĂ´ng co giĂ£n, khĂ´ng thu háº¹p, kĂ­ch thÆ°á»›c tá»± Ä‘á»™ng */
+    text-align: center;
+    /* CĂ³ thá»ƒ thĂªm width hoáº·c max-width náº¿u muá»‘n má»—i figure cĂ³ khung nhá» hÆ¡n */
+    /* width: 80px; */
+}
+#box_login_ads #columns figure img {
+    height: 30px; /* Giáº£m nháº¹ kĂ­ch thÆ°á»›c áº£nh náº¿u muá»‘n nhá» hÆ¡n */
+    /* width: auto; giá»¯ tá»· lá»‡ */
+}
+#box_login_ads #columns figure figcaption {
+    font-size: 11px; /* Giáº£m kĂ­ch thÆ°á»›c chá»¯ trong chĂº thĂ­ch */
+    line-height: 1.2; /* Äiá»u chá»‰nh khoáº£ng cĂ¡ch dĂ²ng náº¿u cáº§n */
+    margin-top: 5px; /* Giáº£m khoáº£ng cĂ¡ch giá»¯a áº£nh vĂ  chá»¯ */
+}
+#box_login_ads #columns figure figcaption a {
+    font-size: 11px; /* Äáº£m báº£o chá»¯ link cÅ©ng nhá» */
+}
+
+/* Äiá»u chá»‰nh thĂªm cho span mĂ u Ä‘á» */
+#box_login_ads #columns figure figcaption span {
+    font-size: 11px;
+}
+
+/* Sá»­a láº¡i ngáº¯t dĂ²ng <br><br> khĂ´ng cáº§n thiáº¿t */
+#box_login_ads #columns figure figcaption br {
+    display: none; /* áº¨n cĂ¡c tháº» <br> khĂ´ng cáº§n thiáº¿t */
+}
+
+/* Náº¿u báº¡n muá»‘n cĂ³ má»™t khoáº£ng cĂ¡ch nhá» giá»¯a cĂ¡c dĂ²ng text trong figcaption, hĂ£y sá»­ dá»¥ng margin-bottom */
+#box_login_ads #columns figure figcaption span {
+    display: block; /* Äá»ƒ má»—i pháº§n tá»­ span vĂ  a náº±m trĂªn má»™t dĂ²ng riĂªng */
+    margin-bottom: 2px;
+}
+#box_login_ads #columns figure figcaption a {
+    display: block;
+    margin-bottom: 2px;
+}
+
+        

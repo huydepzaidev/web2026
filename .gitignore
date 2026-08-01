@@ -1,0 +1,20 @@
+# Local secrets and environment overrides
+config.local.php
+.env
+.env.*
+!.env.example
+
+# Runtime logs
+*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Quarantined PHP files found in static asset directories
+/assets/fontawesome-free/css/bootstrap-min-css.php
+/images/avatar/zoom.php
+/images/bootstrap.php
+/images/css.php

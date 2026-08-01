@@ -1,0 +1,241 @@
+/* Container chính của bài viết */
+.section-box {
+    background-color: #fff; /* Nền trắng như trong ảnh */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Header của bài viết (chứa avatar, tên, thời gian, điểm, tiêu đề) */
+.post-header {
+    border-bottom: 1px dashed #eee; /* Đường gạch dưới header */
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* Dùng flexbox để chia cột cho avatar/tên và thời gian/tiêu đề */
+.post-header-row {
+    display: flex; /* Kích hoạt flexbox */
+    align-items: flex-start; /* Căn chỉnh các mục ở đầu hàng */
+    gap: 15px; /* Khoảng cách giữa các cột */
+}
+
+/* Cột chứa avatar và tên tác giả */
+.post-author-column {
+    flex-shrink: 0; /* Ngăn cột này co lại */
+    text-align: center;
+    width: 80px; /* Chiều rộng cố định cho cột avatar, giúp avatar không bị quá to */
+    padding-top: 5px; /* Điều chỉnh vị trí avatar so với dòng thời gian */
+}
+
+.post-author-avatar {
+    width: 60px; /* Kích thước avatar */
+    height: 60px;
+    border-radius: 50%; /* Làm tròn avatar */
+    object-fit: cover;
+    border: 2px solid #f0f0f0;
+    margin-bottom: 5px;
+    display: block; /* Đảm bảo ảnh là block để căn giữa bằng margin auto */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.post-author-name-block {
+    display: block; /* Đảm bảo span nằm trên dòng riêng */
+    font-size: 13px;
+    color: #333;
+    font-weight: bold;
+}
+
+.post-admin-badge {
+    background-color: #f44336; /* Màu đỏ cho Admin */
+    color: white;
+    padding: 1px 5px; /* Thu nhỏ padding */
+    border-radius: 3px;
+    font-size: 9px; /* Thu nhỏ font size */
+    margin-left: 5px; /* Khoảng cách với tên */
+    vertical-align: middle; /* Căn giữa theo chiều dọc */
+    display: inline-block; /* Để áp dụng padding và margin */
+}
+
+/* Cột chứa thời gian, điểm và tiêu đề bài viết */
+.post-content-column {
+    flex-grow: 1; /* Cột này sẽ chiếm hết không gian còn lại */
+}
+
+/* Dòng chứa thời gian và điểm số */
+.post-meta-line {
+    display: flex; /* Kích hoạt flexbox để căn thời gian trái, điểm phải */
+    justify-content: space-between; /* Đẩy hai phần tử sang hai bên */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 5px; /* Khoảng cách với tiêu đề */
+    font-size: 12px; /* Kích thước chữ nhỏ hơn cho meta */
+    color: #888;
+    padding-top: 5px; /* Đảm bảo dòng này bắt đầu ngang với avatar */
+}
+
+.post-date {
+    /* Đã được đặt màu và font size trong .post-meta-line */
+    color: #666; /* Màu chữ thời gian rõ hơn một chút */
+    font-weight: bold; /* In đậm thời gian như trong ảnh */
+}
+
+/* Tiêu đề bài viết chính */
+.post-title-main {
+    font-size: 15px; /* Kích thước tiêu đề lớn hơn */
+    color: #d9534f; /* Màu đỏ nổi bật cho tiêu đề */
+    margin-top: 0; /* Bỏ margin mặc định của h2 */
+    margin-bottom: 10px;
+    line-height: 1.3;
+    word-wrap: break-word; /* Đảm bảo tiêu đề dài xuống dòng */
+    font-weight: bold; /* In đậm tiêu đề */
+}
+
+/* Nội dung bài viết */
+.post-content {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+    text-align: justify; /* Căn đều nội dung */
+    background-color: #fcfcfc; /* Nền nhạt hơn cho nội dung nếu muốn thu nhỏ */
+    padding: 10px; /* Thêm padding cho nội dung */
+    border-radius: 3px;
+    border: 1px solid #eee;
+}
+
+.post-content img {
+    max-width: 100%; /* Đảm bảo hình ảnh không bị tràn ra ngoài */
+    height: auto;
+    display: block; /* Loại bỏ khoảng trắng dưới ảnh */
+    margin: 10px auto; /* Căn giữa ảnh và thêm khoảng cách */
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+/* Phần bình luận */
+.comments-section {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #e7e7e7;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.comments-section h4 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.comments-list {
+    margin-bottom: 20px;
+}
+
+.comment-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+    position: relative; /* Để vị trí nút xóa */
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    flex-shrink: 0;
+    border: 1px solid #ddd;
+}
+
+.comment-content-wrapper {
+    flex-grow: 1;
+}
+
+.comment-author-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: #333;
+    margin-right: 8px;
+}
+
+.comment-admin-badge {
+    background-color: #f44336;
+    color: white;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    margin-right: 8px;
+}
+
+.comment-date {
+    font-size: 11px;
+    color: #999;
+}
+
+.comment-content-text {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.comment-delete {
+    font-size: 12px;
+    color: #d9534f;
+    text-decoration: none;
+    margin-left: 10px;
+    align-self: center; /* Căn giữa theo chiều dọc */
+    white-space: nowrap; /* Ngăn không cho xuống dòng */
+}
+
+.comment-delete:hover {
+    text-decoration: underline;
+}
+
+.comment-form {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #eee;
+}
+
+.comment-form textarea {
+    width: calc(100% - 10px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical; /* Cho phép thay đổi kích thước theo chiều dọc */
+    min-height: 60px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.comment-form button {
+    background-color: #5cb85c; /* Màu xanh lá */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.comment-form button:hover {
+    background-color: #4cae4c;
+}

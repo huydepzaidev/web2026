@@ -1,0 +1,443 @@
+/* recharge.css - The "Vibrant & Premium" Edition - Final & Complete */
+
+/* Google Fonts - Poppins for modern headings, Roboto for clean body text */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+    /* Fresh Color Palette for a bright, modern, and premium feel */
+    --background-primary: #F0F2F5; /* Very light grey for overall background */
+    --background-secondary: #FFFFFF; /* Pure white for content areas */
+    --text-dark: #333333; /* Dark grey for primary text on light backgrounds */
+    --text-light: #FFFFFF; /* White for text on accent backgrounds */
+    --accent-vibrant: #FF7043; /* A bold, energetic orange/coral for primary accents */
+    --accent-dark: #C25C34; /* Darker shade of accent for hover/active states */
+    --accent-soft: #FFEFE6; /* Very light shade of accent for subtle backgrounds/borders */
+    --border-light: #E0E0E0; /* Light grey for subtle borders */
+    --shadow-light: rgba(0, 0, 0, 0.08); /* Very light, soft shadow for elegance */
+    --shadow-hover: rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
+
+    /* Status Colors (adjusted for light mode compatibility) */
+    --success-bg: #D4EDDA; /* Light green background */
+    --success-text: #155724; /* Dark green text */
+    --error-bg: #F8D7DA; /* Light red background */
+    --error-text: #721C24; /* Dark red text */
+
+    /* Typography settings */
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: var(--background-primary);
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    color: var(--text-dark);
+    line-height: 1.7; /* Good line height for readability */
+    min-height: 100vh;
+    font-size: 16px;
+
+    /* Đảm bảo body là flex container để căn giữa toàn bộ nội dung */
+    display: flex;
+    flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
+    justify-content: space-between; /* Đẩy nội dung lên trên, footer xuống dưới */
+    /* Không dùng align-items: center ở đây, sẽ dùng margin: auto cho body-content để căn giữa */
+}
+
+/* --- Content Wrapper & Branding --- */
+.left_top, .bg_top, .right_top, .bg_tree, .foot_bg, .left_b_bottom, .right_b_bottom, .footer, .left_bottom, .right_bottom {
+    display: none; /* Keep hidden for a clean, modern look */
+}
+
+.body-content {
+    width: 100%;
+    max-width: 900px; /* Adjusted max-width for compact elegance */
+    padding: 40px;
+    box-sizing: border-box;
+    background-color: var(--background-secondary); /* Pure white background for main card */
+    border-radius: 20px; /* More pronounced rounded corners */
+    box-shadow: 0 15px 40px var(--shadow-light); /* Soft, elegant shadow */
+    overflow: hidden; /* Ensures no content spills out */
+    
+    /* Thiết lập flexbox để căn giữa các phần tử bên trong body-content */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Căn giữa các con trực tiếp của body-content */
+    
+    position: relative;
+    z-index: 1;
+
+    /* CĂN GIỮA HOÀN HẢO TOÀN BỘ KHỐI BODY-CONTENT TRONG BODY */
+    margin: 40px auto; /* Tự động căn giữa theo chiều ngang và lề trên/dưới 40px */
+}
+
+h1.a {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 40px; /* Increased space below logo */
+}
+
+h1.a img {
+    height: 110px; /* Slightly refined logo size */
+    max-width: 100%;
+    object-fit: contain;
+    /* No filter for light background, let the logo shine */
+}
+
+/* --- Navigation Menu --- */
+#top {
+    width: 100%;
+    margin-bottom: 35px; /* More space below navigation */
+}
+
+.link-more .h {
+    width: 100%;
+    background-color: var(--background-primary); /* Lighter background for menu strip */
+    border-radius: 15px; /* Smoother rounded corners */
+    overflow: hidden;
+    box-shadow: 0 8px 25px var(--shadow-light); /* Refined shadow */
+    border: 1px solid var(--border-light); /* Subtle border for crispness */
+}
+
+.menu2 table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed; /* Ensures equal column width for horizontal alignment */
+}
+
+.menu2 td {
+    padding: 15px 10px; /* Reduced padding for smaller text */
+    text-align: center;
+    vertical-align: middle;
+    border-right: 1px solid rgba(0, 0, 0, 0.05); /* Subtle divider */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.menu2 td:last-child {
+    border-right: none; /* No divider on the last item */
+}
+
+.menu2 td a {
+    color: var(--text-dark); /* Dark text for menu items */
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.95rem; /* Reduced font size for menu items */
+    display: block;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.menu2 td:hover {
+    background-color: var(--accent-soft); /* Light accent background on hover */
+    transform: translateY(-2px); /* Gentle lift effect */
+    cursor: pointer;
+}
+
+.menu2 td#selected {
+    background-color: var(--accent-vibrant); /* Vibrant accent color for selected item */
+    font-weight: 600; /* Bolder for selected */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+}
+
+.menu2 td#selected a {
+    color: var(--text-light); /* White text on vibrant selected item */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Messages (Toasts) --- */
+.message {
+    padding: 18px 30px; /* More padding for importance */
+    margin-bottom: 30px;
+    border-radius: 12px; /* Smoother corners */
+    text-align: center;
+    font-weight: 500;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1.05rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
+}
+
+.message.success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+    border-color: #A3D9B9;
+}
+
+.message.error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    border-color: #F1B5BA;
+}
+
+/* --- User Info & Exchange Form --- */
+.body-content > p {
+    font-size: 1.15rem; /* Slightly larger for clarity */
+    margin-bottom: 18px;
+    width: 100%; /* Kích thước đầy đủ để nội dung có không gian để căn giữa */
+    color: var(--text-dark);
+
+    /* Cải thiện căn giữa cho nội dung văn bản bên trong */
+    display: flex; /* Biến thẻ <p> thành flex container */
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center; /* Đảm bảo căn giữa theo chiều dọc nếu có nhiều dòng hoặc span */
+}
+
+.body-content > p b {
+    color: var(--accent-vibrant); /* Vibrant accent for key numbers */
+    font-weight: 700;
+    font-size: 1.25rem; /* Larger for emphasis */
+    letter-spacing: 0.03em;
+}
+
+.exchange-form {
+    background: var(--background-secondary); /* Pure white background for the form card */
+    padding: 40px;
+    border-radius: 20px;
+    margin: 35px auto; /* Căn giữa hoàn hảo cho form */
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 500px; /* Form max width */
+    box-shadow: 0 12px 30px var(--shadow-light); /* Deeper but soft shadow */
+    border: 1px solid var(--border-light); /* Subtle border */
+}
+
+.exchange-form h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--accent-vibrant); /* Vibrant heading */
+    font-size: 2.2rem; /* Impactful heading */
+    font-family: var(--font-heading);
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Very subtle shadow */
+    letter-spacing: 0.02em;
+    text-transform: capitalize; /* Capitalize words, not all uppercase for a softer look */
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--text-dark);
+    font-size: 1.05rem;
+    text-align: left;
+    letter-spacing: 0.01em;
+}
+
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 15px; /* Ample padding */
+    border: 1px solid var(--border-light);
+    border-radius: 12px; /* Smooth corners */
+    box-sizing: border-box;
+    font-size: 1.1rem;
+    color: var(--text-dark); /* Dark text for input numbers */
+    background-color: var(--background-primary); /* Light grey background for input */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    font-weight: 400;
+}
+
+.form-group input[type="number"]:focus {
+    border-color: var(--accent-vibrant); /* Vibrant border on focus */
+    box-shadow: 0 0 0 4px rgba(255, 112, 67, 0.2); /* Soft vibrant glow */
+    background-color: var(--background-secondary); /* White background on focus for clarity */
+    outline: none;
+}
+
+.exchange-form button {
+    background-color: var(--accent-vibrant); /* Solid vibrant button */
+    color: var(--text-light); /* White text on button */
+    padding: 18px 25px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.25rem; /* Larger, bold button text */
+    font-family: var(--font-heading);
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Softer shadow for button */
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.exchange-form button:hover {
+    background-color: var(--accent-dark); /* Darker accent on hover */
+    transform: translateY(-2px); /* Gentle lift */
+    box-shadow: 0 10px 25px var(--shadow-hover); /* Slightly stronger shadow */
+}
+
+.exchange-form button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Login/Register message */
+.body-content > p a {
+    color: var(--accent-vibrant);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.body-content > p a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline;
+}
+
+/* --- Footer --- */
+.copyright {
+    text-align: center;
+    padding: 25px;
+    font-size: 0.9rem;
+    color: var(--text-dark); /* Dark text on light background */
+    width: 100%;
+    background-color: var(--background-primary);
+    border-top: 1px solid var(--border-light); /* Light border */
+    box-sizing: border-box;
+}
+
+.copyright p {
+    margin: 5px 0;
+    line-height: 1.5;
+    color: rgba(51, 51, 51, 0.7); /* Slightly muted for copyright */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .body-content {
+        max-width: 92%;
+        margin: 30px auto;
+        padding: 35px;
+    }
+    h1.a img {
+        height: 100px;
+        margin-bottom: 35px;
+    }
+    .menu2 td {
+        padding: 12px 8px; /* Further reduced padding for menu items */
+    }
+    .menu2 td a {
+        font-size: 0.9rem; /* Further reduced font size for menu items */
+    }
+    .exchange-form {
+        padding: 35px;
+    }
+    .exchange-form h2 {
+        font-size: 2rem;
+    }
+    .form-group input[type="number"] {
+        padding: 13px;
+        font-size: 1.05rem;
+    }
+    .exchange-form button {
+        padding: 16px 20px;
+        font-size: 1.15rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .body-content {
+        margin: 25px auto;
+        padding: 30px;
+        border-radius: 18px;
+    }
+    h1.a img {
+        height: 90px;
+        margin-bottom: 30px;
+    }
+    /* Menu will stay horizontal on smaller screens */
+    .menu2 td {
+        padding: 10px 5px; /* Aggressively reduced padding to keep horizontal */
+        font-size: 0.85rem; /* Aggressively reduced font size to keep horizontal */
+        border-bottom: none; /* No bottom border when forced horizontal */
+    }
+    .menu2 td:not(:last-child) {
+        border-right: 1px solid rgba(0, 0, 0, 0.05); /* Keep subtle vertical divider */
+    }
+    .exchange-form {
+        padding: 30px;
+        border-radius: 18px;
+        max-width: 95%;
+    }
+    .exchange-form h2 {
+        font-size: 1.9rem;
+    }
+    .form-group label {
+        font-size: 1rem;
+    }
+    .form-group input[type="number"] {
+        padding: 12px;
+        font-size: 1rem;
+    }
+    .exchange-form button {
+        padding: 14px 15px;
+        font-size: 1.1rem;
+    }
+    .body-content > p {
+        font-size: 1.05rem;
+    }
+    .body-content > p b {
+        font-size: 1.15rem;
+    }
+    .copyright {
+        font-size: 0.85rem;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .body-content {
+        margin: 15px auto;
+        padding: 20px;
+        border-radius: 15px;
+    }
+    h1.a img {
+        height: 80px;
+        margin-bottom: 25px;
+    }
+    .menu2 td {
+        padding: 8px 3px; /* Even more aggressive padding reduction */
+        font-size: 0.75rem; /* Smallest font size for menu items */
+        border-bottom: none;
+    }
+    .menu2 td:not(:last-child) {
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .exchange-form {
+        padding: 25px;
+        border-radius: 15px;
+    }
+    .exchange-form h2 {
+        font-size: 1.7rem;
+        margin-bottom: 25px;
+    }
+    .form-group label {
+        font-size: 0.95rem;
+    }
+    .form-group input[type="number"] {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+    .exchange-form button {
+        padding: 12px 15px;
+        font-size: 1.05rem;
+    }
+    .body-content > p {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+    .body-content > p b {
+        font-size: 1.05rem;
+    }
+    .copyright {
+        font-size: 0.78rem;
+        padding: 15px;
+    }
+}

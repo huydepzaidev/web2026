@@ -1,0 +1,355 @@
+body {
+    background-color: #d3d3d3;
+    color: #222222;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.left_top, .bg_top, .right_top {
+    background: transparent !important;
+}
+
+.body-content {
+    width: 100%;
+    max-width: 800px; /* Tăng chiều rộng tối đa cho PC */
+    margin: 20px auto; /* Luôn căn giữa */
+    background-color: #ff7700;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    padding-bottom: 20px;
+    overflow: hidden;
+    flex-grow: 1;
+    box-sizing: border-box;
+}
+
+.body-content h1.a {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.body-content h1.a img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+#top {
+    width: 100%;
+}
+
+.link-more {
+    background-color: #ff7700;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto 25px auto; /* Căn giữa menu container */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 5px;
+    max-width: 90%; /* Vẫn giữ menu không quá rộng so với khối cha */
+}
+
+.menu2 table {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #ffa500;
+    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    overflow: hidden;
+}
+
+.menu a {
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    display: block;
+    padding: 8px 5px;
+    white-space: nowrap;
+    font-size: 0.85em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: center;
+}
+
+.menu td {
+    text-align: center;
+    background-color: #ff9100;
+    border-right: 1px solid rgba(255,255,255,0.2);
+    transition: background-color 0.3s ease;
+    width: 25%;
+    box-sizing: border-box;
+}
+
+.menu td:last-child {
+    border-right: none;
+}
+
+.menu td:hover {
+    background-color: #e08200;
+}
+
+@media screen and (max-width: 360px) {
+    .menu a {
+        font-size: 0.7em;
+        padding: 6px 3px;
+    }
+}
+
+#selected a {
+    color: #ffeb3b;
+    text-decoration: underline;
+}
+
+.snowEffect {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 99;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#snowcanvas {
+    position: fixed;
+    z-index: 0;
+}
+
+.dangbai-form-wrapper {
+    background-color: #ff7700; /* Màu cam tương tự như body-content */
+    border: 1px solid #ff7700; /* Thay đổi màu border cho khớp */
+    border-radius: 8px;
+    padding: 20px 15px;
+    margin: 0 auto; /* Đảm bảo căn giữa */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    width: 96%;
+    max-width: 760px; /* 800px (body-content max-width) - 2 * 20px (left/right padding ví dụ) = 760px */
+    box-sizing: border-box;
+}
+
+.post-creation-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.post-creation-header h2 {
+    color: #FF0000; /* Đổi màu chữ tiêu đề "Chỉnh sửa bài viết" sang đỏ */
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    letter-spacing: 0.5px;
+}
+
+.post-creation-form .form-group {
+    margin-bottom: 20px;
+}
+
+.post-creation-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #FF0000; /* Đổi màu nhãn "Tiêu đề:" và "Nội dung:" sang đỏ */
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.post-creation-form .form-control {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #c0c0c0;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 16px;
+    box-sizing: border-box;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.08);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-creation-form .form-control:focus {
+    border-color: #ffeb3b; /* Đổi màu focus sang vàng cho hợp tone */
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.08), 0 0 0 3px rgba(255, 235, 59, 0.25);
+    outline: none;
+}
+
+.post-creation-form textarea.form-control {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.post-creation-form .form-control::placeholder {
+    color: #a9a9a9;
+}
+
+.post-creation-form .btn-primary {
+    background-color: #e08200; /* Nút chính màu cam đậm hơn */
+    color: #FF0000; /* Đổi màu chữ "Cập nhật bài viết" sang đỏ */
+    padding: 14px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: block;
+    width: 100%;
+    margin-top: 25px;
+    box-sizing: border-box;
+}
+
+.post-creation-form .btn-primary:hover {
+    background-color: #c46b00; /* Màu tối hơn khi hover */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 15px;
+    position: static;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    width: auto;
+    white-space: normal;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.alert-success {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.alert-info {
+    background-color: #17a2b8;
+    color: #ffffff;
+}
+
+.alert-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+a {
+    color: #ffeb3b; /* Thay đổi màu link mặc định sang vàng cho hợp tone cam */
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+.btn-secondary {
+    background-color: #ff9100; /* Nút phụ màu cam nhạt hơn */
+    color: #FF0000; /* Đổi màu chữ "Hủy" sang đỏ */
+    padding: 14px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background-color: #e08200; /* Màu tối hơn khi hover */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+@media (max-width: 767px) {
+    .body-content {
+        margin: 10px auto;
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .menu2 table {
+        display: table;
+        width: 100%;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .menu td {
+        display: table-cell;
+        width: 25%;
+        border-bottom: none;
+        border-right: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .menu td:last-child {
+        border-right: none;
+    }
+
+    .menu a {
+        padding: 10px 5px;
+        font-size: 0.8em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .link-more {
+        border-radius: 10px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .dangbai-form-wrapper {
+        margin: 15px auto;
+        padding: 15px 10px;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        width: 98%;
+    }
+
+    .post-creation-header h2 {
+        font-size: 24px;
+    }
+
+    .post-creation-form label {
+        font-size: 15px;
+    }
+
+    .post-creation-form .form-control {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .post-creation-form textarea.form-control {
+        min-height: 120px;
+    }
+
+    .post-creation-form .btn-primary,
+    .btn-secondary {
+        font-size: 16px;
+        padding: 12px 20px;
+    }
+}
