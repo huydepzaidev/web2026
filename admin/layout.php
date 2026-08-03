@@ -13,6 +13,7 @@ function admin_icon(string $name): string
         'gift' => '<path d="M20 6h-2.18A3 3 0 0 0 12 5a3 3 0 0 0-5.82 1H4a2 2 0 0 0-2 2v3h9V8h2v3h9V8a2 2 0 0 0-2-2ZM9 6a1 1 0 1 1 1-1 1 1 0 0 1-1 1Zm6 0a1 1 0 1 1 1-1 1 1 0 0 1-1 1ZM3 13v7a2 2 0 0 0 2 2h6v-9H3Zm10 9h6a2 2 0 0 0 2-2v-7h-8v9Z"/>',
         'settings' => '<path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58-1.92-3.32-2.39.96a7.18 7.18 0 0 0-1.62-.94L14.87 3h-3.84l-.36 3.18c-.59.24-1.13.56-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58c-.05.31-.08.65-.08.94s.03.63.08.94l-2.03 1.58 1.92 3.32 2.39-.96c.49.38 1.03.7 1.62.94l.36 3.18h3.84l.36-3.18c.59-.24 1.13-.56 1.62-.94l2.39.96 1.92-3.32-2.03-1.58ZM13 15.5A3.5 3.5 0 1 1 13 8a3.5 3.5 0 0 1 0 7.5Z"/>',
         'server' => '<path d="M4 3h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 10h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm2-7v2h2V6H6Zm0 10v2h2v-2H6Zm4-10v2h8V6h-8Zm0 10v2h8v-2h-8Z"/>',
+        'events' => '<path d="M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm12 8H5v10h14V10ZM5 8h14V6h-2v1h-2V6H9v1H7V6H5v2Zm2 4h4v3H7v-3Z"/>',
         'logs' => '<path d="M13 3a9 9 0 1 0 8.95 10H20a7 7 0 1 1-2.05-4.95L15 11h7V4l-2.63 2.63A8.96 8.96 0 0 0 13 3Zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12Z"/>',
     ];
     return '<svg viewBox="0 0 24 24" aria-hidden="true">' . ($icons[$name] ?? '') . '</svg>';
@@ -28,6 +29,7 @@ function admin_render_header(string $title, string $active = 'dashboard', string
         'transactions' => ['transactions.php', 'Nạp tiền', 'money'],
         'giftcodes' => ['giftcodes.php', 'Giftcode', 'gift'],
         'game-server' => ['game-server.php', 'Vận hành game server', 'server'],
+        'events' => ['events.php', 'Control panel sự kiện', 'events'],
         'settings' => ['settings.php', 'Cấu hình website', 'settings'],
         'logs' => ['logs.php', 'Nhật ký quản trị', 'logs'],
     ];
@@ -41,7 +43,7 @@ function admin_render_header(string $title, string $active = 'dashboard', string
         <meta name="robots" content="noindex,nofollow">
         <title><?= admin_escape($title) ?> · Control Panel</title>
         <link rel="icon" href="<?= admin_escape(webgoc_url('images/favicon-32x32.png')) ?>">
-        <link rel="stylesheet" href="<?= admin_escape(admin_url('assets/admin.css?v=20260731-3')) ?>">
+        <link rel="stylesheet" href="<?= admin_escape(admin_url('assets/admin.css?v=20260802-events')) ?>">
     </head>
     <body>
     <div class="admin-shell">

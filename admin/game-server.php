@@ -184,6 +184,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'watchdog_enabled' => $watchdogEnabled,
             ]);
             admin_flash('success', 'Đã gửi cập nhật EXP ngay cho game server; Quy Lão Kame sẽ thông báo toàn server, không cần reset.');
+        } elseif ($action === 'save_login_notice') {
+            $noticeEnabled = isset($_POST['login_notice_enabled']) ? 1 : 0;
+            $noticeText = str_replace(["\r\n", "\r"], "\n", trim((string) ($_POST['login_notice_text'] ?? '')));
+            if ($noticeEnabled === 1 && $noticeText === '') {
+                throw new RuntimeException('Nội dung thông báo không được để trống khi đang bật.');
+            }
+            if (mb_strlen($noticeText, 'UTF-8') > 1000) {
+                throw new RuntimeException('Nội dung thông báo tối đa 1.000 ký tự.');
+            }
+            admin_execute(
+                'INSERT INTO game_server_config
+                 (id, login_notice_enabled, login_notice_text, updated_by)
+                 VALUES (1, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE
+                  login_notice_enabled=VALUES(login_notice_enabled),
+                  login_notice_text=VALUES(login_notice_text),
+                  updated_by=VALUES(updated_by)',
+                'iss',
+                [$noticeEnabled, $noticeText, (string) $admin_user['username']]
+            );
+            admin_audit('Cập nhật thông báo đăng nhập', 'game_server_config', 1, [
+                'login_notice_enabled' => $noticeEnabled,
+                'login_notice_length' => mb_strlen($noticeText, 'UTF-8'),
+            ]);
+            admin_flash('success', 'Đã lưu thông báo. Server tự đồng bộ; người chơi đăng nhập lại sẽ thấy nội dung mới, không cần chạy lại server.');
         } elseif ($action === 'add_drop') {
             $bossId = game_int('boss_id', -2000000000, 2000000000);
             if (!admin_one('SELECT boss_id FROM game_boss_catalog WHERE boss_id=?', 'i', [$bossId])) {
@@ -317,6 +342,24 @@ admin_render_header(
 <?php if (!empty($runtime['last_error'])): ?>
     <div class="alert alert-error"><span>!</span><div><strong>Lỗi gần nhất của server</strong><br><?= admin_escape($runtime['last_error']) ?></div></div>
 <?php endif; ?>
+
+<section class="panel server-config-grid">
+    <div class="panel-head"><div><h2>Thông báo khi đăng nhập</h2><p>Popup quản trị hiện cho người chơi sau khi vào game</p></div></div>
+    <div class="panel-body">
+        <form class="form-grid" method="post">
+            <?= admin_csrf_field() ?><input type="hidden" name="action" value="save_login_notice">
+            <div class="form-group full">
+                <label class="checkbox-control"><input type="checkbox" name="login_notice_enabled" <?= (int) ($config['login_notice_enabled'] ?? 1) === 1 ? 'checked' : '' ?>> Bật popup thông báo khi nhân vật đăng nhập</label>
+            </div>
+            <div class="form-group full">
+                <label>NỘI DUNG THÔNG BÁO</label>
+                <textarea class="form-control" name="login_notice_text" maxlength="1000" rows="6" placeholder="Nhập nội dung hiển thị cho người chơi..."><?= admin_escape((string) ($config['login_notice_text'] ?? 'X3 Kinh nghiệm đến hết ngày 11/5.' . "\n" . 'Sự kiện Goku Day.' . "\n" . 'Đua TOP nhận quà cực khủng.' . "\n" . 'Tích điểm đổi quà.' . "\n" . 'Chi tiết xem tại diễn đàn, fanpage.')) ?></textarea>
+                <p class="help">Giữ xuống dòng như nội dung muốn hiển thị; tối đa 1.000 ký tự. Sau khi lưu, người chơi đăng nhập lại sẽ thấy nội dung mới mà không cần chạy lại server.</p>
+            </div>
+            <div class="form-actions"><button class="btn btn-primary" type="submit">Lưu thông báo</button></div>
+        </form>
+    </div>
+</section>
 
 <div class="grid-2 server-config-grid">
     <section class="panel">
