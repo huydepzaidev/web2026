@@ -1,8 +1,8 @@
 <?php
 // doi-mat-khau.php - Xử lý đổi mật khẩu và hiển thị form
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -24,24 +24,24 @@ if (!isset($is_logged_in)) {
 // Xử lý yêu cầu POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'changepass') {
     header('Content-Type: application/json');
-    error_log("DEBUG: Session data: " . print_r($_SESSION, true));
 
     // Kiểm tra đăng nhập
     if (!$is_logged_in || !isset($_SESSION['user_id']) || $_SESSION['user_id'] <= 0) {
-        error_log("DEBUG: Người dùng chưa đăng nhập hoặc user_id không có trong session.");
         echo json_encode(['success' => false, 'message' => 'Bạn chưa đăng nhập. Vui lòng đăng nhập để đổi mật khẩu.']);
         exit();
     }
 
-    $currentPassword = $_POST['currentPassword'] ?? '';
-    $newPassword = $_POST['newPassword'] ?? '';
-    $confirmPassword = $_POST['confirmPassword'] ?? '';
-    $userId = $_SESSION['user_id'];
+    $csrfToken = (string) ($_POST['csrf_token'] ?? '');
+    if ($csrfToken === '' || !hash_equals((string) $_SESSION['csrf_token'], $csrfToken)) {
+        http_response_code(419);
+        echo json_encode(['success' => false, 'message' => 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang.']);
+        exit();
+    }
 
-    error_log("DEBUG: currentPassword (nhập): '" . $currentPassword . "'");
-    error_log("DEBUG: newPassword (nhập): '" . $newPassword . "'");
-    error_log("DEBUG: confirmPassword (nhập): '" . $confirmPassword . "'");
-    error_log("DEBUG: User ID từ session: " . $userId);
+    $currentPassword = (string) ($_POST['currentPassword'] ?? '');
+    $newPassword = (string) ($_POST['newPassword'] ?? '');
+    $confirmPassword = (string) ($_POST['confirmPassword'] ?? '');
+    $userId = (int) $_SESSION['user_id'];
 
     // Kiểm tra các trường không được rỗng
     if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
@@ -50,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 
     // Kiểm tra độ dài mật khẩu mới
-    if (strlen($newPassword) < 6) {
-        echo json_encode(['success' => false, 'message' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
+    if (strlen($newPassword) < 6 || strlen($newPassword) > 100) {
+        echo json_encode(['success' => false, 'message' => 'Mật khẩu mới phải dài từ 6 đến 100 ký tự.']);
         exit();
     }
 
@@ -64,8 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     // Lấy mật khẩu từ cơ sở dữ liệu (GIẢ ĐỊNH LÀ PLAINTEXT)
     $stmt = $conn->prepare("SELECT password FROM account WHERE id = ?");
     if (!$stmt) {
-        error_log("DEBUG: Lỗi chuẩn bị câu lệnh SQL SELECT password: " . $conn->error);
-        echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống (SQL Prepare Select). Vui lòng thử lại sau.']);
+        echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống. Vui lòng thử lại sau.']);
         exit();
     }
     $stmt->bind_param("i", $userId);
@@ -73,39 +72,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        error_log("DEBUG: Không tìm thấy tài khoản với ID: " . $userId);
         echo json_encode(['success' => false, 'message' => 'Tài khoản không tồn tại.']);
         $stmt->close();
         exit();
     }
 
     $user = $result->fetch_assoc();
-    $passwordFromDb = $user['password']; // Lấy mật khẩu dạng PLAINTEXT từ DB
+    $passwordFromDb = (string) $user['password'];
     $stmt->close();
 
-    error_log("DEBUG: Mật khẩu từ DB: '" . $passwordFromDb . "'");
-    error_log("DEBUG: Mật khẩu hiện tại nhập vào (plain): '" . $currentPassword . "'");
-
-    // So sánh mật khẩu hiện tại trực tiếp (PLAINTEXT)
-    if ($currentPassword !== $passwordFromDb) { // So sánh trực tiếp
-        error_log("DEBUG: Mật khẩu hiện tại không khớp.");
+    // Game server hiện đăng nhập bằng chuỗi mật khẩu lưu trực tiếp trong bảng account.
+    if (!hash_equals($passwordFromDb, $currentPassword)) {
         echo json_encode(['success' => false, 'message' => 'Mật khẩu hiện tại không đúng.']);
         exit();
     }
     $newPasswordToStore = $newPassword;
     $stmt = $conn->prepare("UPDATE account SET password = ? WHERE id = ?");
     if (!$stmt) {
-        error_log("DEBUG: Lỗi chuẩn bị câu lệnh SQL UPDATE password: " . $conn->error);
-        echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống (SQL Prepare Update). Vui lòng thử lại sau.']);
+        echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống. Vui lòng thử lại sau.']);
         exit();
     }
     $stmt->bind_param("si", $newPasswordToStore, $userId);
 
     if ($stmt->execute()) {
-        error_log("DEBUG: Đổi mật khẩu thành công cho User ID: " . $userId);
         echo json_encode(['success' => true, 'message' => 'Đổi mật khẩu thành công!']);
     } else {
-        error_log("DEBUG: Lỗi khi cập nhật mật khẩu vào CSDL: " . $stmt->error);
         echo json_encode(['success' => false, 'message' => 'Lỗi khi cập nhật mật khẩu. Vui lòng thử lại.']);
     }
     $stmt->close();
@@ -606,13 +597,11 @@ if ($is_logged_in) {
             var lastPostTime = 0;
             $("form[name='changepass']").submit(function(event) {
                 event.preventDefault();
-                console.log("Form đổi mật khẩu đã được gửi.");
 
                 var now = Date.now();
                 if (now - lastPostTime < 10000) {
                     var secondsLeft = Math.ceil((10000 - (now - lastPostTime)) / 1000);
                     $("#comment_error").css("color", "red").text("Bạn chỉ có thể gửi mỗi 10 giây. Vui lòng chờ " + secondsLeft + " giây.");
-                    console.log("Đạt giới hạn thời gian gửi. Số giây còn lại:", secondsLeft);
                     return;
                 }
 
@@ -633,18 +622,12 @@ if ($is_logged_in) {
                 var formData = form.serialize();
                 formData += '&action=' + action;
 
-                console.log("Đang gửi AJAX đến:", "/app/doi-mat-khau.php");
-                console.log("Dữ liệu FormData đang được gửi:", formData);
-
                 $.post("/app/doi-mat-khau.php", formData)
                     .done(function(response) {
-                        console.log("AJAX thành công. Phản hồi thô:", response);
                         try {
                             // jQuery .post() với header Content-Type: application/json tự động parse JSON.
                             // Nếu response là string, hãy thử parse. Nếu không, sử dụng trực tiếp.
                             var parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                            console.log("AJAX thành công. Phản hồi đã phân tích:", parsedResponse);
-
                             if (parsedResponse.success === true) { // Chỉ kiểm tra `success`
                                 $("#comment_error").css("color", "green").text(parsedResponse.message || "Đổi mật khẩu thành công!");
                                 lastPostTime = Date.now();

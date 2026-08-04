@@ -277,7 +277,7 @@
         sync();
         if (!rewards.length) {
             event.preventDefault();
-            window.alert('Giftcode phải có ít nhất một phần thưởng.');
+            window.alert(config.requiredMessage || 'Giftcode phải có ít nhất một phần thưởng.');
         }
     });
 

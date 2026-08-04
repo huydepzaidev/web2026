@@ -79,6 +79,7 @@ admin_render_header('Tổng quan', 'dashboard', 'Toàn cảnh hoạt động c�
                 <a class="quick-item" href="<?= admin_escape(admin_url('accounts.php')) ?>"><span class="quick-icon">♟</span><span><strong>Quản lý tài khoản</strong><small>Khóa, thành viên, số dư và quyền</small></span><b>›</b></a>
                 <a class="quick-item" href="<?= admin_escape(admin_url('posts.php?create=1')) ?>"><span class="quick-icon">✎</span><span><strong>Đăng thông báo mới</strong><small>Tạo và ghim bài lên diễn đàn</small></span><b>›</b></a>
                 <a class="quick-item" href="<?= admin_escape(admin_url('giftcodes.php?create=1')) ?>"><span class="quick-icon">⌘</span><span><strong>Tạo giftcode</strong><small>Phát hành mã quà tặng mới</small></span><b>›</b></a>
+                <a class="quick-item" href="<?= admin_escape(admin_url('mailboxes.php?create=1')) ?>"><span class="quick-icon">✉</span><span><strong>Gửi quà vào hòm thư</strong><small>Trao quà Top 1–4 hoặc quà Admin</small></span><b>›</b></a>
                 <a class="quick-item" href="<?= admin_escape(admin_url('settings.php')) ?>"><span class="quick-icon">⚙</span><span><strong>Cấu hình website</strong><small>Tên server, liên hệ và tải game</small></span><b>›</b></a>
             </div>
         </section>
@@ -101,4 +102,3 @@ admin_render_header('Tổng quan', 'dashboard', 'Toàn cảnh hoạt động c�
     </tbody></table></div>
 </section>
 <?php admin_render_footer(); ?>
-
