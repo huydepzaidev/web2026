@@ -3,7 +3,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Endpoint tra ve JSON: khong in loi ra output, neu khong PHP se chen HTML
+// vao giua JSON va jQuery se bao "loi ket noi" du dang ky da chay xong.
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
 require_once __DIR__ . '/../connect.php';
 if (isset($_SESSION['user_id'])) {
     header('Location: ' . webgoc_url('forum'));
@@ -69,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'regis
             baiviet, xacminh
         ) VALUES (
             :username, :password, :email, NOW(), NOW(), 0, 0,
-            '2002-07-31 00:00:00', '2002-07-31 00:00:00', :ip_address, 0, 0,
+            '2002-07-31 00:00:00', '2002-07-31 00:00:00', :ip_address, 1, 0,
             :server_login, 1, 0, '0', NULL, 0,
             0, '', '', '', 0, 0, 0,
             0, 0, 0, 0, NULL, 0,
@@ -86,8 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'regis
         echo json_encode([
                     'status' => 'success',
                     'message' => 'Đăng ký thành công!',
-                    'redirect' => '/forum'
-                ]);
+                    'redirect' => webgoc_url('forum')
+                ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 exit();
     } catch (PDOException $e) {
         error_log("Lỗi đăng ký: " . $e->getMessage());

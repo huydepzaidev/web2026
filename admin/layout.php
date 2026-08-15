@@ -28,6 +28,7 @@ function admin_render_header(string $title, string $active = 'dashboard', string
         'posts' => ['posts.php', 'Bài viết', 'posts'],
         'transactions' => ['transactions.php', 'Nạp tiền', 'money'],
         'giftcodes' => ['giftcodes.php', 'Giftcode', 'gift'],
+        'mailboxes' => ['mailboxes.php', 'Xếp hạng & Trao quà', 'gift'],
         'game-server' => ['game-server.php', 'Vận hành game server', 'server'],
         'events' => ['events.php', 'Control panel sự kiện', 'events'],
         'settings' => ['settings.php', 'Cấu hình website', 'settings'],

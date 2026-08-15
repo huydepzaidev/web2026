@@ -91,74 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
     } elseif ($action === 'register') {
-        $username = trim($_POST['user'] ?? '');
-        $password = $_POST['pass'] ?? '';
-        $rePassword = $_POST['repass'] ?? '';
-        $server = $_POST['server'] ?? '';
-        $ip_address = $_SERVER['REMOTE_ADDR'];
-
-        $email = '';
-        if (empty($username) || empty($password) || empty($rePassword) || empty($server)) {
-            echo json_encode(['status' => 'error', 'message' => 'Vui lòng điền đầy đủ các trường bắt buộc (Tài Khoản, Mật khẩu, Nhập lại Mật khẩu, và Server).']);
-            exit();
-        }
-        if ($password !== $rePassword) {
-            echo json_encode(['status' => 'error', 'message' => 'Mật khẩu xác nhận không khớp.']);
-            exit();
-        }
-        if (strlen($username) < 3 || strlen($username) > 20) {
-            echo json_encode(['status' => 'error', 'message' => 'Tên đăng nhập phải có từ 3 đến 20 ký tự.']);
-            exit();
-        }
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
-            echo json_encode(['status' => 'error', 'message' => 'Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới.']);
-            exit();
-        }
-        if (strlen($password) < 6) {
-            echo json_encode(['status' => 'error', 'message' => 'Mật khẩu phải có ít nhất 6 ký tự.']);
-            exit();
-        }
-
-        try {
-            // Kiểm tra tên đăng nhập đã tồn tại
-            $stmt = $pdo->prepare("SELECT COUNT(*) FROM account WHERE username = :username");
-            $stmt->execute([':username' => $username]);
-            if ($stmt->fetchColumn() > 0) {
-                echo json_encode(['status' => 'error', 'message' => 'Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.']);
-                exit();
-            }
-
-            // Thêm tài khoản mới vào database
-            $stmt = $pdo->prepare("INSERT INTO account (
-                username, password, email, create_time, update_time, ban, is_admin,
-                last_time_login, last_time_logout, ip_address, active, thoi_vang,
-                server_login, bd_player, is_gift_box, gift_time, reward, vnd,
-                tongnap, token, xsrf_token, newpass, luotquay, vang, event_point,
-                vip, tichdiem, point_post, last_post, gioithieu, xacnhan_gioitheu,
-                baiviet, xacminh
-            ) VALUES (
-                :username, :password, :email, NOW(), NOW(), 0, 0,
-                '2002-07-31 00:00:00', '2002-07-31 00:00:00', :ip_address, 1, 0,
-                :server_login, 1, 0, '0', NULL, 0,
-                0, '', '', '', 0, 0, 0,
-                0, 0, 0, 0, NULL, 0,
-                0, 0
-            )");
-
-            $stmt->execute([
-                ':username' => $username,
-                ':password' => $password,
-                ':email' => $email,
-                ':ip_address' => $ip_address,
-                ':server_login' => $server
-            ]);
-            echo json_encode(['status' => 'success', 'message' => 'Đăng ký tài khoản thành công! Bạn có thể đăng nhập ngay bây giờ.']);
-            exit();
-        } catch (PDOException $e) {
-            error_log("Lỗi đăng ký: " . $e->getMessage());
-            echo json_encode(['status' => 'error', 'message' => 'Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.']);
-            exit();
-        }
+        // Luong dang ky chi ton tai o register_process.php.
+        // Truoc day file nay giu mot ban sao thu hai va ghi active khac nhau,
+        // khien tai khoan tao ra bi lech tuy theo endpoint duoc goi.
+        require __DIR__ . '/register_process.php';
+        exit();
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Hành động không hợp lệ.']);
         exit();

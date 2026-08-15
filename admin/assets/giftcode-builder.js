@@ -3,7 +3,22 @@
     const root = document.querySelector('[data-gift-builder]');
     if (!config || !root) return;
 
-    const rewards = Array.isArray(config.initialRewards) ? config.initialRewards : [];
+    const fixedItemOptions = new Map(Object.entries(config.fixedItemOptions || {}).map(([itemId, options]) => [
+        Number(itemId),
+        Array.isArray(options) ? options.map((option) => ({
+            id: Number(option.id),
+            param: Number(option.param) || 0,
+        })) : [],
+    ]));
+    const blockedItemIds = new Set((config.blockedItemIds || []).map(Number));
+    const copyOptions = (options) => options.map((option) => ({...option}));
+    const rewards = (Array.isArray(config.initialRewards) ? config.initialRewards : []).map((reward) => {
+        const preset = fixedItemOptions.get(Number(reward.id));
+        return {
+            ...reward,
+            options: preset ? copyOptions(preset) : (Array.isArray(reward.options) ? reward.options : []),
+        };
+    });
     const optionMap = new Map(config.options.map((option) => [Number(option.id), option]));
     const rewardsInput = document.querySelector('#rewards_json');
     const rewardList = root.querySelector('[data-reward-list]');
@@ -61,7 +76,11 @@
         rewardList.innerHTML = '';
         emptyState.hidden = rewards.length > 0;
         rewards.forEach((reward, rewardIndex) => {
-            reward.options = Array.isArray(reward.options) ? reward.options : [];
+            const fixedOptions = fixedItemOptions.get(Number(reward.id));
+            const isFixedPreset = Array.isArray(fixedOptions);
+            reward.options = isFixedPreset
+                ? copyOptions(fixedOptions)
+                : (Array.isArray(reward.options) ? reward.options : []);
             const card = document.createElement('article');
             card.className = 'reward-card';
             const isSpecial = Number(reward.id) < 0;
@@ -69,7 +88,8 @@
                 <header class="reward-card-head">
                     <span class="reward-order">${rewardIndex + 1}</span>
                     <div><strong>${escapeHtml(reward.name || `Item #${reward.id}`)}</strong>
-                    <small>ID ${reward.id}${reward.type !== undefined ? ` · Type ${reward.type}` : ''}</small></div>
+                    <small>ID ${reward.id}${reward.type !== undefined ? ` · Type ${reward.type}` : ''}</small>
+                    ${isFixedPreset ? '<span class="badge badge-green">Full chỉ số · Vĩnh viễn</span>' : ''}</div>
                     <button type="button" class="btn btn-danger btn-sm" data-remove-reward>Xóa</button>
                 </header>
                 <div class="reward-main">
@@ -77,19 +97,19 @@
                         <label>${isSpecial ? 'SỐ LƯỢNG CỘNG' : 'SỐ LƯỢNG VẬT PHẨM'}</label>
                         <input class="form-control" type="number" min="1" max="2000000000" value="${Number(reward.quantity) || 1}" data-reward-quantity>
                     </div>
-                    <div class="reward-summary">${isSpecial ? 'Phần thưởng tiền tệ không cần option.' : `${reward.options.length} option đã chọn`}</div>
+                    <div class="reward-summary">${isSpecial ? 'Phần thưởng tiền tệ không cần option.' : (isFixedPreset ? `${reward.options.length} option cố định · vĩnh viễn` : `${reward.options.length} option đã chọn`)}</div>
                 </div>
                 ${isSpecial ? '' : `
                 <div class="option-section">
-                    <div class="option-title"><div><strong>Option của vật phẩm</strong><small>Tìm bằng tên hoặc ID, sau đó bấm kết quả để thêm.</small></div><span class="option-count">${reward.options.length} option</span></div>
-                    <div class="option-search-box">
+                    <div class="option-title"><div><strong>Option của vật phẩm</strong><small>${isFixedPreset ? 'Preset Naruto full chỉ số, không có hạn sử dụng.' : 'Tìm bằng tên hoặc ID, sau đó bấm kết quả để thêm.'}</small></div><span class="option-count">${reward.options.length} option</span></div>
+                    ${isFixedPreset ? '' : `<div class="option-search-box">
                         <div class="option-search-control">
                             <span aria-hidden="true">⌕</span>
                             <input type="search" autocomplete="off" data-option-search placeholder="Ví dụ: chí mạng, HP, không thể giao dịch hoặc 14...">
                             <kbd>Enter</kbd>
                         </div>
                         <div class="option-suggestions" data-option-suggestions hidden></div>
-                    </div>
+                    </div>`}
                     <div data-option-list></div>
                 </div>`}
             `;
@@ -116,26 +136,29 @@
                         </div>
                         <div class="form-group option-param">
                             <label>PARAM (# / %)</label>
-                            <input class="form-control" type="number" min="-2147483648" max="2147483647" value="${Number(itemOption.param) || 0}" data-option-param>
+                            <input class="form-control" type="number" min="-2147483648" max="2147483647" value="${Number(itemOption.param) || 0}" data-option-param ${isFixedPreset ? 'readonly aria-readonly="true"' : ''}>
                         </div>
                         <div class="option-live" data-option-preview>${escapeHtml(optionPreview(option?.name, itemOption.param))}</div>
-                        <button class="option-remove" type="button" data-remove-option aria-label="Xóa option">×</button>
+                        ${isFixedPreset ? '' : '<button class="option-remove" type="button" data-remove-option aria-label="Xóa option">×</button>'}
                     `;
-                    const param = row.querySelector('[data-option-param]');
-                    const preview = row.querySelector('[data-option-preview]');
-                    const updatePreview = () => {
-                        itemOption.param = Number(param.value) || 0;
-                        preview.textContent = optionPreview(optionMap.get(itemOption.id)?.name, itemOption.param);
-                        sync();
-                    };
-                    param.addEventListener('input', updatePreview);
-                    row.querySelector('[data-remove-option]').addEventListener('click', () => {
-                        reward.options.splice(optionIndex, 1);
-                        render();
-                    });
+                    if (!isFixedPreset) {
+                        const param = row.querySelector('[data-option-param]');
+                        const preview = row.querySelector('[data-option-preview]');
+                        const updatePreview = () => {
+                            itemOption.param = Number(param.value) || 0;
+                            preview.textContent = optionPreview(optionMap.get(itemOption.id)?.name, itemOption.param);
+                            sync();
+                        };
+                        param.addEventListener('input', updatePreview);
+                        row.querySelector('[data-remove-option]').addEventListener('click', () => {
+                            reward.options.splice(optionIndex, 1);
+                            render();
+                        });
+                    }
                     list.appendChild(row);
                 });
 
+                if (!isFixedPreset) {
                 const optionSearch = card.querySelector('[data-option-search]');
                 const suggestions = card.querySelector('[data-option-suggestions]');
                 let matches = [];
@@ -206,6 +229,7 @@
                         closeSuggestions();
                     }
                 });
+                }
             }
             rewardList.appendChild(card);
         });
@@ -240,17 +264,22 @@
             nextButton.disabled = catalogPage >= catalogPages;
             modalBody.innerHTML = '';
             data.items.forEach((item) => {
-                const selected = rewards.some((reward) => Number(reward.id) === Number(item.id));
+                const itemId = Number(item.id);
+                const selected = rewards.some((reward) => Number(reward.id) === itemId);
+                const blocked = blockedItemIds.has(itemId);
+                const hasFixedPreset = fixedItemOptions.has(itemId);
                 const row = document.createElement('button');
                 row.type = 'button';
                 row.className = 'catalog-item';
-                row.disabled = selected;
+                row.disabled = selected || blocked;
                 row.innerHTML = `
                     <span class="catalog-id">${item.id}</span>
-                    <span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.description || 'Không có mô tả')} · Type ${item.type} · Phái ${item.gender}</small></span>
-                    <b>${selected ? 'Đã chọn' : 'Chọn +'}</b>`;
+                    <span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.description || 'Không có mô tả')} · Type ${item.type} · Phái ${item.gender}${hasFixedPreset ? ' · Tự áp full vĩnh viễn' : ''}</small></span>
+                    <b>${selected ? 'Đã chọn' : (blocked ? 'Chỉ Top 1' : 'Chọn +')}</b>`;
                 row.addEventListener('click', () => {
-                    rewards.push({...item, quantity: 1, options: []});
+                    if (blocked) return;
+                    const preset = fixedItemOptions.get(itemId);
+                    rewards.push({...item, quantity: 1, options: preset ? copyOptions(preset) : []});
                     render();
                     closeModal();
                 });

@@ -108,7 +108,10 @@ function game_render_boss_options(array $bosses, string $metric): void
 function game_queue_command(string $type, ?int $bossId = null): void
 {
     global $admin_user;
-    $allowed = ['RELOAD_CONFIG', 'RESPAWN_BOSS', 'RESPAWN_ALL'];
+    $allowed = [
+        'RELOAD_CONFIG', 'RESPAWN_BOSS', 'RESPAWN_ALL',
+        'START_MAINTENANCE', 'STOP_MAINTENANCE',
+    ];
     if (!in_array($type, $allowed, true)) {
         throw new RuntimeException('Lệnh server không hợp lệ.');
     }
@@ -209,13 +212,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'login_notice_length' => mb_strlen($noticeText, 'UTF-8'),
             ]);
             admin_flash('success', 'Đã lưu thông báo. Server tự đồng bộ; người chơi đăng nhập lại sẽ thấy nội dung mới, không cần chạy lại server.');
+        } elseif ($action === 'save_divine_turn') {
+            $enabled = isset($_POST['divine_turn_enabled']) ? 1 : 0;
+            $pity = game_int('pity_blank_turns', 1, 100);
+            $fields = [
+                'one_zero_bp', 'one_one_bp', 'one_two_bp',
+                'two_zero_bp', 'two_one_bp', 'two_two_bp',
+                'multi_zero_bp', 'multi_one_bp', 'multi_two_bp', 'multi_three_bp',
+            ];
+            $values = [];
+            foreach ($fields as $field) {
+                $values[$field] = game_chance_bp((string) ($_POST[$field] ?? ''));
+            }
+            if ($values['one_zero_bp'] + $values['one_one_bp'] + $values['one_two_bp'] !== 10000
+                    || $values['two_zero_bp'] + $values['two_one_bp'] + $values['two_two_bp'] !== 10000
+                    || $values['multi_zero_bp'] + $values['multi_one_bp']
+                    + $values['multi_two_bp'] + $values['multi_three_bp'] !== 10000) {
+                throw new RuntimeException('Mỗi nhóm tỷ lệ phải có tổng đúng 100%.');
+            }
+            admin_execute(
+                'INSERT INTO game_divine_turn_config
+                 (id,enabled,one_zero_bp,one_one_bp,one_two_bp,two_zero_bp,two_one_bp,two_two_bp,
+                  multi_zero_bp,multi_one_bp,multi_two_bp,multi_three_bp,pity_blank_turns,updated_by)
+                 VALUES (1,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                 ON DUPLICATE KEY UPDATE enabled=VALUES(enabled),one_zero_bp=VALUES(one_zero_bp),
+                  one_one_bp=VALUES(one_one_bp),one_two_bp=VALUES(one_two_bp),
+                  two_zero_bp=VALUES(two_zero_bp),two_one_bp=VALUES(two_one_bp),two_two_bp=VALUES(two_two_bp),
+                  multi_zero_bp=VALUES(multi_zero_bp),multi_one_bp=VALUES(multi_one_bp),
+                  multi_two_bp=VALUES(multi_two_bp),multi_three_bp=VALUES(multi_three_bp),
+                  pity_blank_turns=VALUES(pity_blank_turns),updated_by=VALUES(updated_by)',
+                'iiiiiiiiiiiis',
+                [$enabled, $values['one_zero_bp'], $values['one_one_bp'], $values['one_two_bp'],
+                 $values['two_zero_bp'], $values['two_one_bp'], $values['two_two_bp'],
+                 $values['multi_zero_bp'], $values['multi_one_bp'], $values['multi_two_bp'],
+                 $values['multi_three_bp'], $pity, (string) $admin_user['username']]
+            );
+            admin_audit('Cập nhật tỷ lệ đồ Thần Linh theo lượt', 'game_divine_turn_config', 1, $values);
+            admin_flash('success', 'Đã lưu tỷ lệ đồ Thần Linh theo lượt; server tự nạp trong tối đa 5 giây.');
         } elseif ($action === 'add_drop') {
             $bossId = game_int('boss_id', -2000000000, 2000000000);
             if (!admin_one('SELECT boss_id FROM game_boss_catalog WHERE boss_id=?', 'i', [$bossId])) {
                 throw new RuntimeException('Boss không tồn tại trong danh mục server.');
             }
             $kind = (string) ($_POST['drop_kind'] ?? 'ITEM');
-            if (!in_array($kind, ['ITEM', 'DIVINE_RANDOM'], true)) {
+            if ($kind !== 'ITEM') {
                 throw new RuntimeException('Loại vật phẩm không hợp lệ.');
             }
             $itemId = null;
@@ -250,9 +290,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             admin_flash('success', 'Đã thêm vật phẩm vào boss. Một boss có thể tiếp tục thêm nhiều dòng khác.');
         } elseif ($action === 'toggle_drop') {
             $dropId = game_int('drop_id', 1, PHP_INT_MAX);
-            $row = admin_one('SELECT enabled FROM game_boss_drop WHERE id=?', 'i', [$dropId]);
+            $row = admin_one('SELECT enabled, drop_kind FROM game_boss_drop WHERE id=?', 'i', [$dropId]);
             if (!$row) {
                 throw new RuntimeException('Không tìm thấy cấu hình rơi đồ.');
+            }
+            if ($row['drop_kind'] === 'DIVINE_RANDOM') {
+                throw new RuntimeException('Dòng Thần Linh cũ đã được thay bằng bảng tỷ lệ theo lượt.');
             }
             $enabled = (int) $row['enabled'] === 1 ? 0 : 1;
             admin_execute('UPDATE game_boss_drop SET enabled=? WHERE id=?', 'ii', [$enabled, $dropId]);
@@ -285,7 +328,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             admin_audit('Gửi lệnh game server', 'game_server_command', null, [
                 'command' => $type, 'boss_id' => $bossId,
             ]);
-            admin_flash('success', 'Đã gửi lệnh. Server sẽ xử lý ở chu kỳ đồng bộ kế tiếp.');
+            if ($type === 'START_MAINTENANCE') {
+                admin_flash('success', 'Đã gửi lệnh BẢO TRÌ: server sẽ lưu và kick người chơi thường, chỉ admin được đăng nhập.');
+            } elseif ($type === 'STOP_MAINTENANCE') {
+                admin_flash('success', 'Đã gửi lệnh KẾT THÚC BẢO TRÌ: server sẽ mở lại đăng nhập cho người chơi.');
+            } else {
+                admin_flash('success', 'Đã gửi lệnh. Server sẽ xử lý ở chu kỳ đồng bộ kế tiếp.');
+            }
         } else {
             throw new RuntimeException('Thao tác không hợp lệ.');
         }
@@ -296,6 +345,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $config = admin_one('SELECT * FROM game_server_config WHERE id=1') ?? [];
+$divineTurn = admin_one('SELECT * FROM game_divine_turn_config WHERE id=1') ?? [
+    'enabled' => 1,
+    'one_zero_bp' => 6500, 'one_one_bp' => 3000, 'one_two_bp' => 500,
+    'two_zero_bp' => 5000, 'two_one_bp' => 3500, 'two_two_bp' => 1500,
+    'multi_zero_bp' => 4000, 'multi_one_bp' => 3500,
+    'multi_two_bp' => 2000, 'multi_three_bp' => 500,
+    'pity_blank_turns' => 5,
+];
 $runtime = admin_one('SELECT * FROM game_server_runtime WHERE id=1') ?? [];
 $bosses = admin_all(
     'SELECT c.*, COUNT(d.id) AS drop_count
@@ -325,6 +382,7 @@ $heartbeat = !empty($runtime['last_heartbeat']) ? strtotime((string) $runtime['l
 $isOnline = (int) ($runtime['server_online'] ?? 0) === 1
     && $heartbeat !== false
     && $heartbeat >= time() - 75;
+$maintenanceMode = (int) ($runtime['admin_only_mode'] ?? 0) === 1;
 
 admin_render_header(
     'Vận hành game server',
@@ -333,7 +391,7 @@ admin_render_header(
 );
 ?>
 <div class="metric-grid">
-    <div class="metric-card"><span class="metric-icon <?= $isOnline ? 'green' : 'red' ?>">●</span><span><small>GAME SERVER</small><strong><?= $isOnline ? 'Online' : 'Offline' ?></strong></span></div>
+    <div class="metric-card"><span class="metric-icon <?= !$isOnline ? 'red' : ($maintenanceMode ? 'orange' : 'green') ?>">●</span><span><small>GAME SERVER</small><strong><?= !$isOnline ? 'Offline' : ($maintenanceMode ? 'Bảo trì' : 'Online') ?></strong></span></div>
     <div class="metric-card"><span class="metric-icon orange">×</span><span><small>EXP SERVER</small><strong><?= (int) ($config['exp_rate'] ?? 1) ?></strong></span></div>
     <div class="metric-card"><span class="metric-icon blue">%</span><span><small>HỆ SỐ DROP</small><strong><?= (int) ($config['drop_rate_percent'] ?? 100) ?>%</strong></span></div>
     <div class="metric-card"><span class="metric-icon green">♛</span><span><small>BOSS CẤU HÌNH / DROP RULE</small><strong><?= count($bosses) ?> / <?= count($drops) ?></strong></span></div>
@@ -405,6 +463,31 @@ admin_render_header(
     </section>
 
     <div class="stack">
+        <section class="panel maintenance-panel <?= $maintenanceMode ? 'is-active' : '' ?>">
+            <div class="panel-head"><div><h2>Bảo trì &amp; kick session</h2><p>Lưu dữ liệu trước khi ngắt kết nối người chơi thường</p></div><span class="spacer"></span><span class="badge <?= $maintenanceMode ? 'badge-orange' : 'badge-green' ?>"><?= $maintenanceMode ? 'CHỈ ADMIN' : 'ĐANG MỞ' ?></span></div>
+            <div class="panel-body">
+                <?php if ($maintenanceMode): ?>
+                    <div class="maintenance-warning active"><strong>Đang khóa login người chơi</strong><p>Chỉ account có <code>is_admin=1</code> được phép đăng nhập. Khởi động lại server cũng tự xóa chế độ này.</p></div>
+                    <div class="maintenance-actions">
+                        <form method="post" data-confirm="Thử lưu và kick lại các session người chơi thường còn sót?">
+                            <?= admin_csrf_field() ?><input type="hidden" name="action" value="server_command"><input type="hidden" name="command_type" value="START_MAINTENANCE">
+                            <button class="btn btn-maintenance-retry" type="submit" <?= !$isOnline ? 'disabled' : '' ?>>↻ THỬ LƯU &amp; KICK LẠI</button>
+                        </form>
+                        <form method="post" data-confirm="Kết thúc bảo trì và cho phép toàn bộ người chơi đăng nhập lại?">
+                            <?= admin_csrf_field() ?><input type="hidden" name="action" value="server_command"><input type="hidden" name="command_type" value="STOP_MAINTENANCE">
+                            <button class="btn btn-maintenance-end" type="submit" <?= !$isOnline ? 'disabled' : '' ?>>✓ KẾT THÚC BẢO TRÌ</button>
+                        </form>
+                    </div>
+                <?php else: ?>
+                    <div class="maintenance-warning"><strong>Kick toàn bộ người chơi thường</strong><p>Server sẽ bật khóa login trước, lưu từng nhân vật tối đa 3 lần rồi mới kick. Admin đang online được giữ lại.</p></div>
+                    <form method="post" data-confirm="Bật bảo trì ngay? Người chơi thường sẽ được lưu dữ liệu và kick; chỉ admin được đăng nhập.">
+                        <?= admin_csrf_field() ?><input type="hidden" name="action" value="server_command"><input type="hidden" name="command_type" value="START_MAINTENANCE">
+                        <button class="btn btn-maintenance" type="submit" <?= !$isOnline ? 'disabled' : '' ?>>⚠ BẢO TRÌ · KICK ALL</button>
+                    </form>
+                <?php endif; ?>
+                <?php if (!$isOnline): ?><p class="help maintenance-help">Button đang khóa vì game server không có heartbeat hợp lệ.</p><?php endif; ?>
+            </div>
+        </section>
         <section class="panel">
             <div class="panel-head"><div><h2>Cứu hộ boss</h2><p>Đưa boss về trạng thái sạch và gọi lại an toàn</p></div></div>
             <div class="panel-body">
@@ -436,6 +519,39 @@ admin_render_header(
     </div>
 </div>
 
+<section class="panel">
+    <div class="panel-head"><div><h2>Đồ Thần Linh theo lượt boss</h2><p>Boss 12h và 14h giữ nguyên cơ chế riêng; mỗi nhóm phải cộng đúng 100%</p></div></div>
+    <div class="panel-body">
+        <form class="form-grid" method="post">
+            <?= admin_csrf_field() ?><input type="hidden" name="action" value="save_divine_turn">
+            <div class="form-group full">
+                <label><input type="checkbox" name="divine_turn_enabled" value="1" <?= (int) $divineTurn['enabled'] === 1 ? 'checked' : '' ?>> BẬT RƠI ĐỒ THẦN LINH THEO LƯỢT</label>
+            </div>
+            <?php
+            $divineFields = [
+                'one_zero_bp' => '1 boss · 0 món', 'one_one_bp' => '1 boss · 1 món', 'one_two_bp' => '1 boss · 2 món',
+                'two_zero_bp' => '2 boss/hình thái · 0 món', 'two_one_bp' => '2 boss/hình thái · 1 món', 'two_two_bp' => '2 boss/hình thái · 2 món',
+                'multi_zero_bp' => 'Từ 3 boss/hình thái · 0 món', 'multi_one_bp' => 'Từ 3 boss/hình thái · 1 món',
+                'multi_two_bp' => 'Từ 3 boss/hình thái · 2 món', 'multi_three_bp' => 'Từ 3 boss/hình thái · 3 món',
+            ];
+            foreach ($divineFields as $field => $label):
+            ?>
+                <div class="form-group"><label><?= admin_escape($label) ?> (%)</label>
+                    <input class="form-control" type="number" min="0" max="100" step="0.01"
+                           name="<?= admin_escape($field) ?>"
+                           value="<?= admin_escape(number_format((int) $divineTurn[$field] / 100, 2, '.', '')) ?>" required>
+                </div>
+            <?php endforeach; ?>
+            <div class="form-group"><label>SỐ LƯỢT TRẮNG TRƯỚC KHI BẢO HIỂM</label>
+                <input class="form-control" type="number" min="1" max="100" name="pity_blank_turns"
+                       value="<?= (int) $divineTurn['pity_blank_turns'] ?>" required>
+                <p class="help">Mặc định 5: sau 5 lượt liên tiếp không rơi, lượt thứ 6 chắc chắn có 1 món.</p>
+            </div>
+            <div class="form-actions"><button class="btn btn-primary" type="submit">Lưu tỷ lệ theo lượt</button></div>
+        </form>
+    </div>
+</section>
+
 <section class="panel server-drop-builder">
     <div class="panel-head"><div><h2>Thêm vật phẩm cho boss</h2><p>Mỗi lần lưu tạo một dòng; cùng một boss có thể thêm bao nhiêu item tùy ý</p></div></div>
     <div class="panel-body">
@@ -451,7 +567,6 @@ admin_render_header(
                 <label>LOẠI PHẦN THƯỞNG</label>
                 <select class="form-control" name="drop_kind" data-drop-kind>
                     <option value="ITEM">Item cụ thể trong database</option>
-                    <option value="DIVINE_RANDOM">Đồ Thần Linh ngẫu nhiên</option>
                 </select>
             </div>
             <div class="form-group" data-item-field>
