@@ -43,4 +43,33 @@ if ($conn->connect_error) {
 $conn->set_charset("utf8mb4");
 
 date_default_timezone_set('Asia/Ho_Chi_Minh');
+
+// Load website settings from DB
+$web_settings = [];
+$settings_result = $conn->query("SELECT * FROM settings LIMIT 1");
+if ($settings_result && ($row = $settings_result->fetch_assoc())) {
+    $web_settings = $row;
+}
+
+if (!empty($web_settings['Zalo'])) {
+    $box_zalo_url = $web_settings['Zalo'];
+}
+if (!empty($web_settings['IPhone'])) {
+    $testflight_url = $web_settings['IPhone'];
+}
+
+$download_android = !empty(trim((string) ($web_settings['Android'] ?? ''))) ? trim((string) $web_settings['Android']) : webgoc_url('down/NRO.apk');
+$download_windows = !empty(trim((string) ($web_settings['Windows'] ?? ''))) ? trim((string) $web_settings['Windows']) : webgoc_url('down/PC.rar');
+$download_iphone = !empty(trim((string) ($web_settings['IPhone'] ?? ''))) ? trim((string) $web_settings['IPhone']) : $testflight_url;
+$download_java = !empty(trim((string) ($web_settings['Java'] ?? ''))) ? trim((string) $web_settings['Java']) : webgoc_url('down/JAR.jar');
+
+if (!function_exists('is_external_url')) {
+    function is_external_url(?string $url): bool {
+        if (!$url) {
+            return false;
+        }
+        return preg_match('~^(?:https?:)?//~i', $url) === 1;
+    }
+}
 ?>
+

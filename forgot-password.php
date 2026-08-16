@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'connect.php';
 require_once 'set.php';
 ?>
@@ -47,14 +47,13 @@ require_once 'set.php';
                     <div class="text-center mb-2"> <a href="dien-dan"><img class="rounded" src="images/logo_sk_he.png"
                                 id="logo"></a> </div>
                     <div class="text-center pt-2">
-                        <div style="display: inline-block;"> <a href="tai-game/android"> <img class="icon-download"
-                            src="images/android.png"></a> <br>
-                            <small class="text-dark">0.0.1</small>
+                        <div style="display: inline-block;"> <a href="<?php echo htmlspecialchars($download_android); ?>" <?= is_external_url($download_android) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?>> <img class="icon-download"
+                            src="images/android.png"></a>
                         </div>
-                        <div style="display: inline-block;"> <a href="tai-game/windows"><img class="icon-download"
-                            src="images/pc.png"></a> <br> <small class="text-dark">0.0.1</small> </div>
-                        <div style="display: inline-block;"> <a href="tai-game/iphone"><img class="icon-download"
-                            src="images/ip.png"></a> <br> <small class="text-dark">0.0.1</small> </div>
+                        <div style="display: inline-block;"> <a href="<?php echo htmlspecialchars($download_windows); ?>" <?= is_external_url($download_windows) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?>><img class="icon-download"
+                            src="images/pc.png"></a> </div>
+                        <div style="display: inline-block;"> <a href="<?php echo htmlspecialchars($download_iphone); ?>" <?= is_external_url($download_iphone) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?>><img class="icon-download"
+                            src="images/ip.png"></a> </div>
                     <div> <img height="12" src="images/12.png" style="vertical-align: middle;"> <small
                                 style="font-size: 10px" id="hour3">DĂ nh cho
                                 ngÆ°á»i chÆ¡i trĂªn 12 tuá»•i. ChÆ¡i quĂ¡ 180 phĂºt má»—i ngĂ y sáº½ háº¡i sá»©c khá»e.</small> </div>

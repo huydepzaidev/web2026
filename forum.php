@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'settings.php';
 require_once 'forum_data.php';
 $conn->close();
@@ -201,80 +201,42 @@ $conn->close();
         </a>
         <a id="tab-leaderboard" href="bang-xep-hang" style="flex-shrink: 0;">
             <button class="w3-button w3-red w3-small w3-hover-green">Top Sức Mạnh</button>
-        <!-- </a>
-        <a id="tab-top-nap" href="top-nap" style="flex-shrink: 0;">
-            <button class="w3-button w3-red w3-small w3-hover-green">Top Nạp Tiền</button>
-        </a> -->
-		</a>
+        </a>
         <a id="tab-top-nap" href="top-nhiem-vu" style="flex-shrink: 0;">
             <button class="w3-button w3-red w3-small w3-hover-green">Top Nhiệm Vụ</button>
         </a>
     </div>
-    <?php endif; ?>
-</div>
 
+    <br>
 
-                                <br>
-
-                                <?php if (!$is_logged_in): ?>
-                                <div id="box_login_ads">
-    <div id="columns" style="text-align:center">
-        <figure>
-            <a href="/down/JAR.jar?v=20260213-1348" download> <img height="35" src="/images/jar.png" alt="CHÚ BÉ RỒNG ONLINE"></a>
-            <br>
-            </a>
-            <figcaption>
-                <span style="color:rgb(209, 9, 50);">237</span> <a href="#" onclick="if (!window.__cfRLUnblockHandlers) return false; openWinjad()" title="CHÚ BÉ RỒNG ONLINE" target="_blank" data-cf-modified-6e49640f1ec245fe06a7b8fa-="">
+    <div id="box_login_ads">
+        <div id="columns" style="text-align:center; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
+            <figure>
+                <a href="<?php echo htmlspecialchars($download_java); ?>" <?= is_external_url($download_java) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - JAVA">
+                    <img height="35" src="/images/jar.png" alt="CHÚ BÉ RỒNG ONLINE - JAVA">
                 </a>
-                <br> <br>
-            </figcaption>
-        </figure>
+            </figure>
 
-        <!-- <figure>
-            <a href="/down/NRO.apk?v=20260603-2358" title="CHÚ BÉ RỒNG ONLINE">
-                <img height="35" src="/images/android.png" alt="CHÚ BÉ RỒNG ONLINE">
-            </a>
-            <figcaption><span style="color:rgb(209, 9, 50);">244</span>
-                <br>
-                <a href="/?c=huong-dan"></a>
-            </figcaption>
-        </figure> -->
+            <figure>
+                <a href="<?php echo htmlspecialchars($download_android); ?>" <?= is_external_url($download_android) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - ANDROID">
+                    <img height="35" src="/images/play.png" alt="CHÚ BÉ RỒNG ONLINE - ANDROID">
+                </a>
+            </figure>
 
-        <figure>
-            <a href="/down/NRO.apk?v=20260603-2358" title="CHÚ BÉ RỒNG ONLINE">
-                <img height="35" src="/images/play.png" alt="CHÚ BÉ RỒNG ONLINE">
-            </a>
-            <figcaption><span style="color:rgb(209, 9, 50);">244</span>
-                <br> <br>
-            </figcaption>
-        </figure>
+            <figure>
+                <a href="<?php echo htmlspecialchars($download_windows); ?>" <?= is_external_url($download_windows) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - PC / WINDOWS">
+                    <img height="35" src="/images/pc.png" alt="CHÚ BÉ RỒNG ONLINE - PC / WINDOWS">
+                </a>
+            </figure>
 
-        <figure>
-            <a href="/down/PC.rar?v=20260610-2022" title="CHÚ BÉ RỒNG ONLINE">
-                <img height="35" src="/images/pc.png" alt="CHÚ BÉ RỒNG ONLINE">
-            </a>
-            <figcaption><span style="color:rgb(209, 9, 50);">244</span>
-                <br> <br>
-            </figcaption>
-        </figure>
-
-        <figure>
-            <a href="<?php echo htmlspecialchars($testflight_url ?? 'https://testflight.apple.com/join/FWEJoZEB'); ?>" title="CHÚ BÉ RỒNG ONLINE">
-                <img style="margin-bottom:0px" height="35" src="/images/ip.png" alt="CHÚ BÉ RỒNG ONLINE">
-            </a>
-            <figcaption>
-                <a href="<?php echo htmlspecialchars($testflight_url ?? 'https://testflight.apple.com/join/FWEJoZEB'); ?>">Testflight 1</a> <br> <br>
-            </figcaption>
-        </figure>
-        <figure>
-            <!-- <a href="/Users/Payments" title="CHÚ BÉ RỒNG ONLINE">
-                <img src="/images/napngoc.png" height="35">
-            </a> -->
-            <!-- <figcaption>Nạp Ngọc</figcaption> </figure> -->
-
-                                </div>
-                                </div>
-                                <?php endif; ?>
+            <figure>
+                <a href="<?php echo htmlspecialchars($download_iphone); ?>" <?= is_external_url($download_iphone) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - IPHONE / IOS">
+                    <img style="margin-bottom:0px" height="35" src="/images/ip.png" alt="CHÚ BÉ RỒNG ONLINE - IPHONE / IOS">
+                </a>
+            </figure>
+        </div>
+    </div>
+<?php endif; ?>
                                             <div class="body">
                                                 <div id="box_forums" class="beta_test">
                                                     <div class="box_list_chuyenmuc">

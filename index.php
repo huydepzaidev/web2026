@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 include_once 'connect.php';
 ?>
 <!DOCTYPE html>
@@ -83,66 +83,31 @@ include_once 'connect.php';
     </div>
 </div>            <div class="download">
                 <div class="bg-content text-center">
-                    <script type="text/javascript">
-var url;
- function openWinjar() {
-        url = window
-                .open(<?php echo json_encode($box_zalo_url ?? 'https://zalo.me/g/njvxgh490'); ?>, "_blank", "width=786, height=786");
-    }
-	function openWinjad() {
-        url = window
-                .open(<?php echo json_encode($box_zalo_url ?? 'https://zalo.me/g/njvxgh490'); ?>, "_blank", "width=786, height=786");
-    }
-</script>
-<div id="columns" style="text-align:center; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">						
-	<figure>
-    <a href="down/JAR.jar?v=20260213-1348" download title="CHÚ BÉ RỒNG ONLINE - JAVA"><img height="35"
-             src="images/jar.png"
-             alt="CHÚ BÉ RỒNG ONLINE">
-    </a>
-</figure>
-	</figure>
-	
-	<!-- <figure>
-		<a href="/down/NRO.apk?v=20260603-2358" title="CHÚ BÉ RỒNG ONLINE">
-		<img height="35" src="/images/android.png" alt="CHÚ BÉ RỒNG ONLINE">
-		</a> 
-		<figcaption><span style="color:rgb(209, 9, 50);">246</span>
-		<br>
-		<a href="/?c=huong-dan">Hướng dẫn cài</a></figcaption> -->
-	</figure> 
-	<figure>
-	  <a href="down/NRO.apk?v=20260603-2358" title="CHÚ BÉ RỒNG ONLINE">
-		<img height="35" src="images/play.png" alt="CHÚ BÉ RỒNG ONLINE">
-		</a>
-	  <!-- <figcaption><span style="color:rgb(209, 9, 50);">246</span>  -->
-		<br> <br></figcaption>
-	</figure>
-	
-	<figure>
-	  <a href="down/PC.rar?v=20260610-2022" title="CHÚ BÉ RỒNG ONLINE">
-		<img height="35" src="images/pc.png" alt="CHÚ BÉ RỒNG ONLINE">
-		</a>
-	  <!-- <figcaption><span style="color:rgb(209, 9, 50);">246</span> -->
-		<br> <br></figcaption>
-	</figure>
-	<figure>
-		<a href="<?php echo htmlspecialchars($testflight_url ?? 'https://testflight.apple.com/join/FWEJoZEB'); ?>" title="CHÚ BÉ RỒNG ONLINE">
-		<img style="margin-bottom:0px" height="35" src="images/ip.png" alt="CHÚ BÉ RỒNG ONLINE">
-		</a>
-	  <!-- <figcaption>
-<br> -->
-<!-- <a href="<?php echo htmlspecialchars($testflight_url ?? 'https://testflight.apple.com/join/FWEJoZEB'); ?>">Testflight 1</a> <br> <br>
-</figcaption> -->
-	<!-- </figure>
-	<figure>
-	  <a href="https://pay.teamobi.com/?game=nr&name=" title="CHÚ BÉ RỒNG ONLINE"><img src="/images/napngoc.png" height="35">
-		</a>
-		<figcaption><span style="color:rgb(209, 9, 50);"><a href="/app/index.php?for=event&do=sms&p=0&sz=15">Báo Lỗi SMS</a></span><br>
-			<span style="color:rgb(209, 9, 50);"><a href="/app/index.php?for=event&do=report&p=0&sz=15">Báo Lỗi thẻ</a></span></figcaption>	
-	</figure>
-   -->
-</div>                    <div id="columns" class="text-center"> </div>
+                    <div id="columns" style="text-align:center; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">						
+                        <figure>
+                            <a href="<?php echo htmlspecialchars($download_java); ?>" <?= is_external_url($download_java) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - JAVA">
+                                <img height="35" src="images/jar.png" alt="CHÚ BÉ RỒNG ONLINE - JAVA">
+                            </a>
+                        </figure>
+                        
+                        <figure>
+                            <a href="<?php echo htmlspecialchars($download_android); ?>" <?= is_external_url($download_android) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - ANDROID">
+                                <img height="35" src="images/play.png" alt="CHÚ BÉ RỒNG ONLINE - ANDROID">
+                            </a>
+                        </figure>
+                        
+                        <figure>
+                            <a href="<?php echo htmlspecialchars($download_windows); ?>" <?= is_external_url($download_windows) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - PC / WINDOWS">
+                                <img height="35" src="images/pc.png" alt="CHÚ BÉ RỒNG ONLINE - PC / WINDOWS">
+                            </a>
+                        </figure>
+
+                        <figure>
+                            <a href="<?php echo htmlspecialchars($download_iphone); ?>" <?= is_external_url($download_iphone) ? 'target="_blank" rel="noopener noreferrer"' : 'download' ?> title="CHÚ BÉ RỒNG ONLINE - IPHONE / IOS">
+                                <img style="margin-bottom:0px" height="35" src="images/ip.png" alt="CHÚ BÉ RỒNG ONLINE - IPHONE / IOS">
+                            </a>
+                        </figure>
+                    </div>
                 </div>
             </div>
             <div class="bg-content">
